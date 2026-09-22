@@ -26,6 +26,7 @@ create index if not exists students_institution_name_idx on public.students(inst
 create index if not exists student_guardians_student_idx on public.student_guardians(student_id);
 create index if not exists admissions_institution_status_idx on public.admissions(institution_id,status);
 create index if not exists admissions_student_idx on public.admissions(student_id);
+create index if not exists admissions_reviewed_by_idx on public.admissions(reviewed_by);
 alter table public.students enable row level security; alter table public.student_guardians enable row level security; alter table public.admissions enable row level security;
 create policy students_select on public.students for select to authenticated using ((select app_private.has_permission('students.view')) and ((select app_private.is_super_admin()) or institution_id=(select institution_id from public.profiles where id=(select auth.uid()))));
 create policy students_insert on public.students for insert to authenticated with check ((select app_private.has_permission('students.create')) and ((select app_private.is_super_admin()) or institution_id=(select institution_id from public.profiles where id=(select auth.uid()))));
