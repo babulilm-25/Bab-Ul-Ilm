@@ -11,6 +11,9 @@ create index if not exists subjects_institution_type_idx on public.subjects(inst
 create index if not exists class_subjects_class_idx on public.class_subjects(class_id);
 create index if not exists class_subjects_subject_idx on public.class_subjects(subject_id);
 create index if not exists curriculum_units_class_subject_idx on public.curriculum_units(class_id,subject_id);
+create index if not exists class_subjects_institution_idx on public.class_subjects(institution_id);
+create index if not exists curriculum_units_institution_idx on public.curriculum_units(institution_id);
+create index if not exists curriculum_units_subject_idx on public.curriculum_units(subject_id);
 alter table public.academic_classes enable row level security; alter table public.sections enable row level security; alter table public.subjects enable row level security; alter table public.class_subjects enable row level security; alter table public.curriculum_units enable row level security;
 create policy academic_classes_select on public.academic_classes for select to authenticated using ((select app_private.is_super_admin()) or ((select app_private.has_permission('academics.view')) and institution_id=(select p.institution_id from public.profiles p where p.id=(select auth.uid()))));
 create policy academic_classes_insert on public.academic_classes for insert to authenticated with check ((select app_private.is_super_admin()) or ((select app_private.has_permission('academics.edit')) and institution_id=(select p.institution_id from public.profiles p where p.id=(select auth.uid()))));
