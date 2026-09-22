@@ -1,82 +1,50 @@
-import { useEffect, useMemo, useState } from 'react'
-import { BookOpen, Building2, ChevronRight, CircleUserRound, GraduationCap, LayoutDashboard, LogOut, Menu, Moon, ShieldCheck, Sun, Users, X } from 'lucide-react'
-import { supabase } from './lib/supabase'
-import type { Session } from '@supabase/supabase-js'
+import {useEffect,useState} from 'react'
+import {Activity,BookOpen,Building2,Check,ChevronRight,CircleUserRound,CreditCard,GraduationCap,LayoutDashboard,LogOut,Menu,Moon,Plus,RefreshCw,ShieldCheck,Smartphone,Sun,Users,X} from 'lucide-react'
+import {supabase} from './lib/supabase'
+import type {Session} from '@supabase/supabase-js'
 
-const nav = [
-  {label:'Dashboard',icon:LayoutDashboard},
-  {label:'Students',icon:GraduationCap},
-  {label:'Teachers & Staff',icon:Users},
-  {label:'Academics',icon:BookOpen},
-  {label:'Branches',icon:Building2},
-  {label:'Security',icon:ShieldCheck},
+type Page='Dashboard'|'Users'|'Roles & Permissions'|'Branches'|'Security'|'Students'|'Academics'
+type Profile={id:string;institution_id:string|null;display_name:string|null;locale:string;theme:string;must_change_password:boolean;disabled_at:string|null}
+type Role={id:string;name:string;slug:string;description:string|null;is_system:boolean;institution_id:string|null}
+type Branch={id:string;name:string;code:string;active:boolean}
+type Audit={id:number;action:string;entity_type:string|null;created_at:string}
+const nav:{label:Page;icon:any;admin?:boolean}[]=[
+ {label:'Dashboard',icon:LayoutDashboard},{label:'Users',icon:Users,admin:true},{label:'Roles & Permissions',icon:ShieldCheck,admin:true},
+ {label:'Branches',icon:Building2,admin:true},{label:'Security',icon:ShieldCheck},{label:'Students',icon:GraduationCap},{label:'Academics',icon:BookOpen}
 ]
 
-function App(){
-  const [session,setSession]=useState<Session|null>(null)
-  const [loading,setLoading]=useState(true)
-  const [email,setEmail]=useState('')
-  const [password,setPassword]=useState('')
-  const [error,setError]=useState('')
-  const [menu,setMenu]=useState(false)
-  const [dark,setDark]=useState(()=>localStorage.getItem('bab-theme')==='dark')
-
-  useEffect(()=>{
-    document.documentElement.dataset.theme=dark?'dark':'light'
-    localStorage.setItem('bab-theme',dark?'dark':'light')
-  },[dark])
-
-  useEffect(()=>{
-    supabase.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false)})
-    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,next)=>setSession(next))
-    return ()=>subscription.unsubscribe()
-  },[])
-
-  const userEmail=useMemo(()=>session?.user.email ?? '',[session])
-
-  async function login(e:React.FormEvent){
-    e.preventDefault(); setError('')
-    const {error}=await supabase.auth.signInWithPassword({email,password})
-    if(error)setError(error.message)
-  }
-
-  async function logout(){await supabase.auth.signOut()}
-
-  if(loading)return <div className="splash"><div className="brand-mark">ب</div><strong>Bab UL Ilm</strong><span>Loading secure workspace…</span></div>
-
-  if(!session)return <main className="auth-shell">
-    <section className="auth-art">
-      <div className="brand-mark large">ب</div>
-      <p className="eyebrow">Madarsa Management Platform</p>
-      <h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1>
-      <p className="muted">A cloud-first platform for Madarsa Ahle Sunnat Bab UL Ilm Raza E Mustafa.</p>
-    </section>
-    <form className="auth-card" onSubmit={login}>
-      <div><p className="eyebrow">Secure sign in</p><h2>Welcome back</h2><p className="muted">Sign in with your institution account.</p></div>
-      <label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email" required /></label>
-      <label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required /></label>
-      {error&&<div className="error">{error}</div>}
-      <button className="primary" type="submit">Sign in <ChevronRight size={18}/></button>
-      <small>Authentication is handled by Supabase Auth. Authorization is enforced by database RLS.</small>
-    </form>
-  </main>
-
-  return <div className="app-shell">
-    <aside className={menu?'sidebar open':'sidebar'}>
-      <div className="sidebar-head"><div className="brand-mark">ب</div><div><strong>Bab UL Ilm</strong><small>Admin Console</small></div><button className="icon mobile-only" onClick={()=>setMenu(false)} aria-label="Close menu"><X size={20}/></button></div>
-      <nav>{nav.map(item=><button key={item.label} className={item.label==='Dashboard'?'nav-item active':'nav-item'} onClick={()=>setMenu(false)}><item.icon size={19}/><span>{item.label}</span></button>)}</nav>
-      <div className="sidebar-foot"><div className="user-mini"><CircleUserRound size={20}/><div><strong>{userEmail}</strong><small>Authenticated user</small></div></div><button className="nav-item" onClick={logout}><LogOut size={19}/>Sign out</button></div>
-    </aside>
-    {menu&&<button className="backdrop" onClick={()=>setMenu(false)} aria-label="Close navigation"/>}
-    <section className="content">
-      <header className="topbar"><button className="icon mobile-only" onClick={()=>setMenu(true)} aria-label="Open menu"><Menu/></button><div><p className="eyebrow">Institution workspace</p><h1>Dashboard</h1></div><button className="icon" onClick={()=>setDark(v=>!v)} aria-label="Toggle theme">{dark?<Sun/>:<Moon/>}</button></header>
-      <main className="page">
-        <div className="hero"><div><span className="badge">Foundation online</span><h2>Assalamu Alaikum 👋</h2><p>Bab UL Ilm is connected to its cloud workspace. Core administration modules are being built on this foundation.</p></div><div className="hero-orb">ب</div></div>
-        <div className="stats"><article><span>Platform</span><strong>Cloud-first</strong><small>Supabase PostgreSQL</small></article><article><span>Security</span><strong>RLS-ready</strong><small>Database-side authorization</small></article><article><span>Mobile</span><strong>Capacitor</strong><small>Android + future iOS</small></article><article><span>Languages</span><strong>EN + اردو</strong><small>RTL architecture ready</small></article></div>
-        <section className="panel"><div><p className="eyebrow">Next modules</p><h3>Administration foundation</h3></div><div className="module-grid">{['Users & Roles','Branches','Students','Academics','Attendance','Finance'].map((x,i)=><div className="module" key={x}><span>0{i+1}</span><strong>{x}</strong><small>Database-backed module</small></div>)}</div></section>
-      </main>
-    </section>
-  </div>
+export default function App(){
+ const [session,setSession]=useState<Session|null>(null),[loading,setLoading]=useState(true),[profile,setProfile]=useState<Profile|null>(null)
+ const [roles,setRoles]=useState<Role[]>([]),[branches,setBranches]=useState<Branch[]>([]),[audits,setAudits]=useState<Audit[]>([])
+ const [page,setPage]=useState<Page>('Dashboard'),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[error,setError]=useState('')
+ const [menu,setMenu]=useState(false),[dark,setDark]=useState(()=>localStorage.getItem('bab-theme')==='dark'),[busy,setBusy]=useState(false)
+ const [payments,setPayments]=useState(false),[sms,setSms]=useState(false)
+ useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';localStorage.setItem('bab-theme',dark?'dark':'light')},[dark])
+ useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false)});const {data:{subscription}}=supabase.auth.onAuthStateChange((_,s)=>setSession(s));return()=>subscription.unsubscribe()},[])
+ useEffect(()=>{if(session)load()},[session])
+ async function load(){setError('');const {data:p,error:pe}=await supabase.from('profiles').select('id,institution_id,display_name,locale,theme,must_change_password,disabled_at').eq('id',session!.user.id).single();if(pe){setError(pe.message);return}setProfile(p);const [r,b,a,s]=await Promise.all([supabase.from('roles').select('id,name,slug,description,is_system,institution_id').order('is_system',{ascending:false}).order('name'),supabase.from('branches').select('id,name,code,active').order('name'),supabase.from('audit_logs').select('id,action,entity_type,created_at').order('created_at',{ascending:false}).limit(20),supabase.from('app_settings').select('key,value').in('key',['feature.online_payments','feature.sms_notifications'])]);setRoles(r.data??[]);setBranches(b.data??[]);setAudits((a.data??[]) as Audit[]);setPayments(Boolean((s.data??[]).find(x=>x.key==='feature.online_payments')?.value?.enabled));setSms(Boolean((s.data??[]).find(x=>x.key==='feature.sms_notifications')?.value?.enabled))}
+ async function login(e:React.FormEvent){e.preventDefault();setBusy(true);setError('');const {error}=await supabase.auth.signInWithPassword({email,password});if(error)setError(error.message);setBusy(false)}
+ if(loading)return <div className="splash"><div className="brand-mark">ب</div><strong>Bab UL Ilm</strong><span>Loading secure workspace…</span></div>
+ if(!session)return <main className="auth-shell"><section className="auth-art"><div className="brand-mark large">ب</div><p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1><p className="muted">A cloud-first platform for Madarsa Ahle Sunnat Bab UL Ilm Raza E Mustafa.</p></section><form className="auth-card" onSubmit={login}><p className="eyebrow">Secure sign in</p><h2>Welcome back</h2><label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="error">{error}</div>}<button className="primary" disabled={busy}>{busy?'Signing in…':'Sign in'}<ChevronRight size={18}/></button><small>Online payments and provider-dependent messaging are disabled until integrations are configured.</small></form></main>
+ if(profile?.disabled_at)return <main className="auth-shell"><section className="auth-card"><p className="eyebrow">Access disabled</p><h2>This account is disabled</h2><p className="muted">Contact your institution Super Admin.</p><button className="primary" onClick={()=>supabase.auth.signOut()}>Sign out</button></section></main>
+ if(profile?.must_change_password)return <PasswordChange done={load}/>
+ const superAdmin=roles.some(r=>r.slug==='super-admin'&&r.institution_id===null)
+ const allowed=nav.filter(n=>!n.admin||superAdmin)
+ return <div className="app-shell"><aside className={menu?'sidebar open':'sidebar'}><div className="sidebar-head"><div className="brand-mark">ب</div><div><strong>Bab UL Ilm</strong><small>Admin Console</small></div><button className="icon mobile-only" onClick={()=>setMenu(false)}><X/></button></div><nav>{allowed.map(n=><button key={n.label} className={page===n.label?'nav-item active':'nav-item'} onClick={()=>{setPage(n.label);setMenu(false)}}><n.icon size={19}/>{n.label}</button>)}</nav><div className="sidebar-foot"><div className="user-mini"><CircleUserRound/><div><strong>{session.user.email}</strong><small>{superAdmin?'Super Admin':'Institution user'}</small></div></div><button className="nav-item" onClick={()=>supabase.auth.signOut()}><LogOut/>Sign out</button></div></aside>{menu&&<button className="backdrop" onClick={()=>setMenu(false)}/>}<section className="content"><header className="topbar"><button className="icon mobile-only" onClick={()=>setMenu(true)}><Menu/></button><div><p className="eyebrow">Institution workspace</p><h1>{page}</h1></div><div><button className="icon" onClick={()=>{setBusy(true);load().finally(()=>setBusy(false))}}><RefreshCw className={busy?'spin':''}/></button><button className="icon" onClick={()=>setDark(!dark)}>{dark?<Sun/>:<Moon/>}</button></div></header><main className="page">{error&&<div className="error banner">{error}<button className="icon" onClick={()=>setError('')}><X/></button></div>}{page==='Dashboard'&&<Dashboard branches={branches} roles={roles} audits={audits} payments={payments} sms={sms}/>} {page==='Users'&&<UsersPage roles={roles} branches={branches} setError={setError}/>} {page==='Roles & Permissions'&&<RolesPage roles={roles} setError={setError}/>} {page==='Branches'&&<BranchesPage branches={branches} setBranches={setBranches} setError={setError}/>} {page==='Security'&&<SecurityPage audits={audits} setError={setError}/>} {(page==='Students'||page==='Academics')&&<ComingSoon title={page==='Students'?'Students & Admissions':'Academics'} />}</main></section></div>
 }
 
-export default App
+function PasswordChange({done}:{done:()=>Promise<void>}){const[n,setN]=useState(''),[c,setC]=useState(''),[e,setE]=useState('');async function save(x:React.FormEvent){x.preventDefault();if(n.length<12)return setE('Use at least 12 characters.');if(n!==c)return setE('Passwords do not match.');const{error}=await supabase.auth.updateUser({password:n});if(error)return setE(error.message);const{error:pe}=await supabase.rpc('complete_password_change');if(pe)return setE(pe.message);await done()}return <main className="auth-shell"><section className="auth-art"><div className="brand-mark large">ب</div><p className="eyebrow">First sign-in security</p><h1>Change your temporary password.</h1><p className="muted">This step is required before entering the administration console.</p></section><form className="auth-card" onSubmit={save}><p className="eyebrow">Required</p><h2>Set a new password</h2><label>New password<input type="password" value={n} onChange={x=>setN(x.target.value)} minLength={12} required/></label><label>Confirm password<input type="password" value={c} onChange={x=>setC(x.target.value)} minLength={12} required/></label>{e&&<div className="error">{e}</div>}<button className="primary">Save password<Check/></button></form></main>}
+
+function Dashboard({branches,roles,audits,payments,sms}:{branches:Branch[];roles:Role[];audits:Audit[];payments:boolean;sms:boolean}){return <><div className="hero"><div><span className="badge">Foundation online</span><h2>Assalamu Alaikum 👋</h2><p>Cloud workspace is live. Provider-dependent services remain safely disabled until integration.</p></div><div className="hero-orb">ب</div></div><div className="stats"><article><span>Branches</span><strong>{branches.length}</strong><small>Configured</small></article><article><span>Roles</span><strong>{roles.length}</strong><small>System + custom</small></article><article><span>Security</span><strong>MFA ready</strong><small>Authenticator flow</small></article><article><span>Audit</span><strong>{audits.length}</strong><small>Recent events</small></article></div><section className="panel"><p className="eyebrow">Feature controls</p><h3>Integrations intentionally gated</h3><div className="feature-grid"><Feature icon={<CreditCard/>} title="Online payments" on={payments} text={payments?'Enabled':'Off until gateway integration'}/><Feature icon={<Smartphone/>} title="SMS notifications" on={sms} text={sms?'Enabled':'Off until provider setup'}/><Feature icon={<ShieldCheck/>} title="Database authorization" on text="RLS + server-side RBAC"/></div></section></>}
+
+function Feature({icon,title,on,text}:{icon:any;title:string;on:boolean;text:string}){return <div className="feature"><span className="feature-icon">{icon}</span><div><strong>{title}</strong><small>{text}</small></div><span className={on?'status on':'status'}>{on?'On':'Off'}</span></div>}
+
+function UsersPage({roles,branches,setError}:{roles:Role[];branches:Branch[];setError:(s:string)=>void}){const[users,setUsers]=useState<Profile[]>([]),[open,setOpen]=useState(false),[f,setF]=useState({email:'',password:'',display_name:'',role_id:'',branch_id:''});async function load(){const{data,error}=await supabase.from('profiles').select('id,institution_id,display_name,locale,theme,must_change_password,disabled_at').order('created_at',{ascending:false});if(error)setError(error.message);else setUsers((data??[]) as Profile[])}useEffect(()=>{load()},[]);async function create(e:React.FormEvent){e.preventDefault();const{data,error}=await supabase.functions.invoke('admin-user',{body:{action:'create',...f}});if(error||data?.error){setError(error?.message??data?.error??'Create failed');return}setOpen(false);await load()}async function act(id:string,a:'disable'|'enable'){const{data,error}=await supabase.functions.invoke('admin-user',{body:{action:a,user_id:id}});if(error||data?.error)setError(error?.message??data?.error??'Action failed');else load()}return <section className="panel"><div className="section-head"><div><p className="eyebrow">Identity & access</p><h3>Users</h3></div><button className="primary small" onClick={()=>setOpen(true)}><Plus/>New user</button></div>{open&&<form className="inline-form" onSubmit={create}><input placeholder="Name" value={f.display_name} onChange={e=>setF({...f,display_name:e.target.value})} required/><input type="email" placeholder="Email" value={f.email} onChange={e=>setF({...f,email:e.target.value})} required/><input type="password" placeholder="Temporary password (12+)" value={f.password} onChange={e=>setF({...f,password:e.target.value})} minLength={12} required/><select value={f.role_id} onChange={e=>setF({...f,role_id:e.target.value})}><option value="">No role</option>{roles.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select><select value={f.branch_id} onChange={e=>setF({...f,branch_id:e.target.value})}><option value="">No branch</option>{branches.map(b=><option key={b.id} value={b.id}>{b.name}</option>)}</select><button className="primary small">Create</button></form>}<div className="table-wrap"><table><thead><tr><th>Name</th><th>Status</th><th>Password</th><th>Action</th></tr></thead><tbody>{users.map(u=><tr key={u.id}><td><strong>{u.display_name||'Unnamed'}</strong><small>{u.id.slice(0,8)}…</small></td><td><span className={u.disabled_at?'status':'status on'}>{u.disabled_at?'Disabled':'Active'}</span></td><td>{u.must_change_password?'Change required':'Set'}</td><td><button className="ghost small" onClick={()=>act(u.id,u.disabled_at?'enable':'disable')}>{u.disabled_at?'Enable':'Disable'}</button></td></tr>)}</tbody></table></div></section>}
+
+function RolesPage({roles,setError}:{roles:Role[];setError:(s:string)=>void}){const[open,setOpen]=useState(false),[name,setName]=useState(''),[slug,setSlug]=useState('');async function create(e:React.FormEvent){e.preventDefault();const{error}=await supabase.rpc('admin_create_role',{p_name:name,p_slug:slug,p_description:null,p_permission_keys:[]});if(error)setError(error.message);else{setOpen(false);setName('');setSlug('')}}return <section className="panel"><div className="section-head"><div><p className="eyebrow">Authorization</p><h3>Roles & permissions</h3></div><button className="primary small" onClick={()=>setOpen(true)}><Plus/>Create role</button></div>{open&&<form className="inline-form" onSubmit={create}><input placeholder="Role name" value={name} onChange={e=>setName(e.target.value)} required/><input placeholder="slug" value={slug} onChange={e=>setSlug(e.target.value)} required/><button className="primary small">Create</button></form>}<div className="role-grid">{roles.map(r=><div className="role-card" key={r.id}><strong>{r.name}</strong><small>{r.slug}</small><span className={r.is_system?'status on':'status'}>{r.is_system?'System':'Custom'}</span><p>{r.description||'No description'}</p></div>)}</div></section>}
+
+function BranchesPage({branches,setBranches,setError}:{branches:Branch[];setBranches:React.Dispatch<React.SetStateAction<Branch[]>>;setError:(s:string)=>void}){const[n,setN]=useState(''),[c,setC]=useState(''),[open,setOpen]=useState(false);async function create(e:React.FormEvent){e.preventDefault();const uid=(await supabase.auth.getUser()).data.user?.id;const{data:p}=await supabase.from('profiles').select('institution_id').eq('id',uid).single();if(!p?.institution_id)return setError('Institution not configured');const{data,error}=await supabase.from('branches').insert({institution_id:p.institution_id,name:n,code:c.toUpperCase()}).select('id,name,code,active').single();if(error)return setError(error.message);setBranches(v=>[...v,data]);setOpen(false);setN('');setC('')}return <section className="panel"><div className="section-head"><div><p className="eyebrow">Institution structure</p><h3>Branches</h3></div><button className="primary small" onClick={()=>setOpen(true)}><Plus/>New branch</button></div>{open&&<form className="inline-form" onSubmit={create}><input placeholder="Branch name" value={n} onChange={e=>setN(e.target.value)} required/><input placeholder="Code" value={c} onChange={e=>setC(e.target.value)} required/><button className="primary small">Create</button></form>}<div className="role-grid">{branches.map(b=><div className="role-card" key={b.id}><strong>{b.name}</strong><small>{b.code}</small><span className={b.active?'status on':'status'}>{b.active?'Active':'Inactive'}</span><p>Branch-level RLS boundary.</p></div>)}</div></section>}
+
+function SecurityPage({audits,setError}:{audits:Audit[];setError:(s:string)=>void}){const[aal,setAal]=useState('aal1'),[factors,setFactors]=useState<any[]>([]),[qr,setQr]=useState(''),[fid,setFid]=useState(''),[code,setCode]=useState('');async function load(){const a=await supabase.auth.mfa.getAuthenticatorAssuranceLevel();if(!a.error)setAal(a.data.currentLevel);const f=await supabase.auth.mfa.listFactors();if(!f.error)setFactors(f.data.totp??[])}useEffect(()=>{load()},[]);async function enroll(){const{data,error}=await supabase.auth.mfa.enroll({factorType:'totp',friendlyName:'Bab UL Ilm Authenticator'});if(error)setError(error.message);else{setFid(data.id);setQr(data.totp.qr_code)}}async function verify(){const{data,error}=await supabase.auth.mfa.challenge({factorId:fid});if(error)return setError(error.message);const v=await supabase.auth.mfa.verify({factorId:fid,challengeId:data.id,code});if(v.error)setError(v.error.message);else{setQr('');setCode('');load()}}return <div className="security-grid"><section className="panel"><div className="section-head"><div><p className="eyebrow">Account protection</p><h3>Authenticator MFA</h3></div><span className={aal==='aal2'?'status on':'status'}>{aal.toUpperCase()}</span></div><p className="muted">TOTP enrollment and challenge are handled by Supabase Auth.</p>{factors.map(f=><div className="factor" key={f.id}><ShieldCheck/><div><strong>{f.friendly_name||'Authenticator'}</strong><small>{f.status}</small></div><button className="ghost small" onClick={async()=>{const{error}=await supabase.auth.mfa.unenroll({factorId:f.id});if(error)setError(error.message);else load()}}>Remove</button></div>)}{!qr&&<button className="primary small" onClick={enroll}><ShieldCheck/>Add authenticator</button>}{qr&&<div className="mfa-box"><img alt="Authenticator QR" src={'data:image/svg+xml;utf8,'+encodeURIComponent(qr)}/><input inputMode="numeric" maxLength={6} placeholder="123456" value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,'').slice(0,6))}/><button className="primary small" disabled={code.length!==6} onClick={verify}>Verify & enable</button></div>}</section><section className="panel"><div className="section-head"><div><p className="eyebrow">Audit</p><h3>Recent security events</h3></div><Activity/></div>{audits.length?audits.map(a=><div className="audit-row" key={a.id}><strong>{a.action}</strong><time>{new Date(a.created_at).toLocaleString()}</time></div>):<p className="muted">No visible audit records yet.</p>}</section></div>}
+
+function ComingSoon({title}:{title:string}){return <section className="panel empty"><BookOpen/><p className="eyebrow">Next build</p><h3>{title}</h3><p className="muted">This module is intentionally gated until its schema, RLS and offline behavior are ready.</p></section>}
