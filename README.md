@@ -9,3 +9,6 @@ Modern Madarsa Management Platform for Madarsa Ahle Sunnat Bab UL Ilm Raza E Mus
 - GitHub Actions for Android artifacts
 
 Production work is being implemented incrementally with cloud-first architecture and database-side authorization.
+
+## Build
+Android artifacts are produced by GitHub Actions from the `main` branch.
