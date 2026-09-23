@@ -12,7 +12,7 @@ type UiPermissionScope={edit?:string;delete?:string;create?:string}
 const UiPermissionContext=createContext<UiPermissionScope>({})
 let permissionKeysForUi=new Set<string>()
 function UiScope({scope,children}:{scope:UiPermissionScope;children:React.ReactNode}){return <UiPermissionContext.Provider value={scope}>{children}</UiPermissionContext.Provider>}
-function UiGate({action,children}:{action:'create'|'edit'|'delete';children:React.ReactNode}){const scope=useContext(UiPermissionContext);const key=scope[action];const can=key==='*'||(!!key&&permissionKeysForUi.has(key));return can?<>{children}</>:null}
+function UiGate({action,permission,children}:{action?:'create'|'edit'|'delete';permission?:string;children:React.ReactNode}){const scope=useContext(UiPermissionContext);const key=permission??(action?scope[action]:undefined);const can=key==='*'||(!!key&&permissionKeysForUi.has(key));return can?<>{children}</>:null}
 function pageScope(page:Page,superAdmin:boolean):UiPermissionScope{
  if(superAdmin)return {create:'*',edit:'*',delete:'*'}
  const map:Partial<Record<Page,UiPermissionScope>>={
