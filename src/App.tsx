@@ -10,7 +10,7 @@ type Branch={id:string;name:string;code:string;active:boolean}
 type Audit={id:number;action:string;entity_type:string|null;created_at:string}
 const nav:{label:Page;icon:any;admin?:boolean}[]=[
  {label:'Dashboard',icon:LayoutDashboard},{label:'Users',icon:Users,admin:true},{label:'Roles & Permissions',icon:ShieldCheck,admin:true},
- {label:'Branches',icon:Building2,admin:true},{label:'Security',icon:ShieldCheck},{label:'Students',icon:GraduationCap},{label:'Academics',icon:BookOpen},{label:'Teachers / Staff',icon:Users},{label:'Timetable & Attendance',icon:Check},{label:'Exams & Results',icon:GraduationCap},{label:'Fees & Finance',icon:WalletCards}
+ {label:'Branches',icon:Building2,admin:true},{label:'Security',icon:ShieldCheck},{label:'Students',icon:GraduationCap},{label:'Academics',icon:BookOpen},{label:'Teachers / Staff',icon:Users},{label:'Timetable & Attendance',icon:Check},{label:'Exams & Results',icon:GraduationCap},{label:'Fees & Finance',icon:Wallet}
 ]
 
 export default function App(){
