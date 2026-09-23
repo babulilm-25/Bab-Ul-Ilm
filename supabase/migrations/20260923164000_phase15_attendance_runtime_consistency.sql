@@ -1,7 +1,14 @@
 -- Phase 15: attendance runtime consistency and duplicate protection
-alter table public.attendance_sessions
-  add constraint attendance_sessions_class_date_period_key
-  unique (class_id, attendance_date, period_no);
+do $$
+begin
+  begin
+    alter table public.attendance_sessions
+      add constraint attendance_sessions_class_date_period_key
+      unique (class_id, attendance_date, period_no);
+  exception
+    when duplicate_object then null;
+  end;
+end $$;
 
 alter table public.attendance_sessions
   drop constraint if exists attendance_sessions_status_check;
