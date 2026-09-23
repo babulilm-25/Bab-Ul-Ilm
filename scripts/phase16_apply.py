@@ -25,4 +25,8 @@ if "{page==='Settings'" not in s:
     s=s.replace("{page==='Communication & Portal'&&<CommunicationPortalPage setError={setError} roleSlugs={roleSlugs} superAdmin={superAdmin}/>}","{page==='Communication & Portal'&&<CommunicationPortalPage setError={setError} roleSlugs={roleSlugs} superAdmin={superAdmin}/>} {page==='Settings'&&<SettingsPage profile={profile} setError={setError} dark={dark} setDark={setDark}/>} ",1)
 if "auth-pills" not in s:
     s=s.replace('<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1>','<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1><div className="auth-pills"><span>Secure</span><span>Cloud-first</span><span>Beautifully simple</span></div>',1)
+# Keep repeated CI runs idempotent.
+s=re.sub(r"(import \\{SettingsPage\\} from './premium'\\n)+", "import {SettingsPage} from './premium'\\n", s)
+s=re.sub(r"(\\{label:'HR & Payroll',icon:Users,permission:'hr.view'\\},\\{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'\\},)+", "{label:'HR & Payroll',icon:Users,permission:'hr.view'},{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'},", s)
+s=re.sub(r"(\\{page==='HR & Payroll'&&<HrPayrollPage setError=\\{setError\\}/>} \\{page==='Data Import & Promotion'&&<DataImportPromotionPage setError=\\{setError\\}/>\\} )+", "{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} ", s)
 p.write_text(s)
