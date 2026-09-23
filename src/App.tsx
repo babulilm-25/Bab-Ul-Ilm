@@ -94,7 +94,7 @@ function AttendancePage({setError}:{setError:(x:string)=>void}){
 \n\n
 function ExamsPage({setError}:{setError:(x:string)=>void}){
  const[tab,setTab]=useState<'exams'|'results'|'promotion'>('exams'),[exams,setExams]=useState<any[]>([]),[subjects,setSubjects]=useState<any[]>([]),[classes,setClasses]=useState<any[]>([]),[students,setStudents]=useState<any[]>([]),[examSubjects,setExamSubjects]=useState<any[]>([]),[results,setResults]=useState<any[]>([]),[promotions,setPromotions]=useState<any[]>([]),[open,setOpen]=useState(false);
- const[e,setE]=useState({name:'',exam_type:'term',start_date:'',end_date:'',class_id:'',subject_id:'',max_marks:'100',pass_marks:'40'});
+ const[e,setE]=useState({name:'',exam_type:'term',start_date:'',end_date:'',exam_id:'',class_id:'',subject_id:'',max_marks:'100',pass_marks:'40'});
  const[r,setR]=useState({exam_subject_id:'',student_id:'',marks:'',remarks:''});
  const[p,setP]=useState({student_id:'',from_class_id:'',to_class_id:'',decision:'promoted',remarks:''});
  async function load(){const[x,s,c,es,rr,pp]=await Promise.all([
