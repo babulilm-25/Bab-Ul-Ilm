@@ -12,6 +12,7 @@ create table if not exists public.staff_attendance (
  unique(institution_id, staff_id, attendance_date)
 );
 alter table public.staff_attendance enable row level security;
+grant select, insert, update, delete on public.staff_attendance to authenticated;
 create index if not exists staff_attendance_institution_date_idx on public.staff_attendance(institution_id, attendance_date desc);
 create index if not exists staff_attendance_staff_date_idx on public.staff_attendance(staff_id, attendance_date desc);
 drop policy if exists staff_attendance_select on public.staff_attendance;
