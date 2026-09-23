@@ -174,3 +174,8 @@ create trigger announcement_notification_trigger
 after insert or update of active,published_at,title,message,audience
 on public.announcements for each row
 execute function app_private.notify_announcement_recipients();
+
+
+-- Phase 13: Realtime communication
+alter publication supabase_realtime add table public.notifications;
+alter publication supabase_realtime add table public.announcements;
