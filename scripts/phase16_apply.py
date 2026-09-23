@@ -1,7 +1,7 @@
 from pathlib import Path
 p=Path("src/App.tsx")
 s=p.read_text()
-imp="import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage}"
+imp="import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage} from './phase16'"
 s=s.replace("\n"+imp,"").replace(imp,"")
 s=s.replace("import type {Session} from '@supabase/supabase-js'","import type {Session} from '@supabase/supabase-js'\n"+imp,1)
 s=s.replace("type Page='Dashboard'|'Users'|'Roles & Permissions'|'Branches'|'Institution Structure'|'Hostel & Mess'|'Security'|'Students'|'Student Enrollment'|'Academics'|'Teachers / Staff'|'Timetable & Attendance'|'Exams & Results'|'Fees & Finance'|'Library & Inventory'|'Reports & Certificates'|'Communication & Portal'",
