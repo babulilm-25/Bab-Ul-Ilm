@@ -1,6 +1,6 @@
 from pathlib import Path
 p=Path("src/App.tsx")
-s=p.read_text()
+s=p.read_text()\nimport re\ns=re.sub(r"import \\{DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage\\}.*\\n","",s)
 imp="import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage} from './phase16'"
 s=s.replace("\n"+imp,"").replace(imp,"")
 s=s.replace("import type {Session} from '@supabase/supabase-js'","import type {Session} from '@supabase/supabase-js'\n"+imp,1)
