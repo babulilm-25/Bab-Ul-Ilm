@@ -14,3 +14,12 @@ drop policy if exists login_events_insert on public.login_events;
 drop policy if exists login_events_select on public.login_events;
 create policy login_events_insert on public.login_events for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy login_events_select on public.login_events for select to authenticated using ((select auth.uid()) = user_id or app_private.institution_permission(institution_id,'audit.view'));
+
+create index if not exists hostel_allocations_bed_idx on public.hostel_allocations(bed_id);
+create index if not exists hostel_allocations_institution_idx on public.hostel_allocations(institution_id);
+create index if not exists hostel_attendance_institution_idx on public.hostel_attendance(institution_id);
+create index if not exists hostel_beds_institution_idx on public.hostel_beds(institution_id);
+create index if not exists hostel_rooms_institution_idx on public.hostel_rooms(institution_id);
+create index if not exists mess_meal_plans_institution_idx on public.mess_meal_plans(institution_id);
+create index if not exists student_lifecycle_events_actor_idx on public.student_lifecycle_events(actor_user_id);
+create index if not exists student_lifecycle_events_institution_idx on public.student_lifecycle_events(institution_id);
