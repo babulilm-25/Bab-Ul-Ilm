@@ -23,10 +23,16 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install
+      - name: Prepare app branding assets
+        run: |
+          mkdir -p assets
+          cp public/logo.jpg assets/logo.png
       - name: Build web
         run: npm run build
       - name: Add Android platform
         run: npx cap add android
+      - name: Generate native app icons
+        run: npx @capacitor/assets generate --android --assetPath assets --iconBackgroundColor '#0a3027' --iconBackgroundColorDark '#0a3027' --splashBackgroundColor '#0a3027' --splashBackgroundColorDark '#071e18'
       - name: Sync Capacitor
         run: npx cap sync android
       - name: Setup Java
