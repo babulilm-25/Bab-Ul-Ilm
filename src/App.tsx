@@ -178,7 +178,8 @@ function AttendancePage({setError}:{setError:(x:string)=>void}){
  async function openAttendance(){
   if(!selectedClass)return setError('Select a class');
   const institution_id=await iid();if(!institution_id)return setError('Institution not configured');
-  let existing=await supabase.from('attendance_sessions').select('id').eq('class_id',selectedClass).eq('attendance_date',date).eq('period_no',Number(t.period_no)||1).maybeSingle();
+  let existing=await supabase.from('attendance_sessions').select('id,status').eq('class_id',selectedClass).eq('attendance_date',date).eq('period_no',Number(t.period_no)||1).maybeSingle();
+  if(existing.data?.status==='closed')return setError('This attendance session is already closed. Create a new session for another period/date.');
   let sid=existing.data?.id;
   if(existing.error&&!existing.error.message.includes('0 rows'))return setError(existing.error.message);
   if(!sid){
