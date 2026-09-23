@@ -26,7 +26,7 @@ body{overflow-x:hidden;overscroll-behavior-y:none;-webkit-tap-highlight-color:tr
 button,input,select,textarea{touch-action:manipulation}
 button{min-height:40px}
 .brand-mark{overflow:hidden;position:relative;background:#102f29;border:1px solid #ffffff12}
-.brand-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.brand-mark img{width:100%;height:100%;object-fit:contain;display:block;padding:5px;border-radius:50%}
 .brand-mark.large{background:#102f29;box-shadow:0 16px 40px #0f3d3230}
 .auth-shell{min-height:100dvh}
 .app-shell{min-height:100dvh}
@@ -46,7 +46,7 @@ table{min-width:680px}
 input,select,textarea{min-height:44px}
 .hero{position:relative}
 .hero-orb{overflow:hidden}
-.hero-orb img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.hero-orb img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block;padding:10px}
 .mobile-bottom-nav{display:none}
 @keyframes page-in{from{opacity:.7;transform:translateY(4px)}to{opacity:1;transform:none}}
 
