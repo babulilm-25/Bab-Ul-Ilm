@@ -21,6 +21,8 @@ create table if not exists public.staff_attendance (
 );
 alter table public.staff_attendance enable row level security;
 grant select, insert, update, delete on public.staff_attendance to authenticated;
+drop trigger if exists staff_attendance_touch_updated_at on public.staff_attendance;
+create trigger staff_attendance_touch_updated_at before update on public.staff_attendance for each row execute function public.touch_updated_at();
 create index if not exists staff_attendance_institution_date_idx on public.staff_attendance(institution_id, attendance_date desc);
 create index if not exists staff_attendance_staff_date_idx on public.staff_attendance(staff_id, attendance_date desc);
 drop policy if exists staff_attendance_select on public.staff_attendance;
