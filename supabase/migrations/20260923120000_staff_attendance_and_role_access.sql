@@ -1,3 +1,11 @@
+-- Add exam permissions used by the exam/results UI
+insert into public.permissions(key,module,description) values
+('exams.view','exams','View exams and results'),
+('exams.create','exams','Create exams and results'),
+('exams.edit','exams','Edit exams and results'),
+('exams.delete','exams','Delete exams and results')
+on conflict (key) do nothing;
+
 -- Staff attendance + role access hardening
 create table if not exists public.staff_attendance (
  id uuid primary key default gen_random_uuid(),
@@ -29,9 +37,9 @@ select r.id,p.id from public.roles r cross join public.permissions p
 where r.slug='super-admin' on conflict do nothing;
 with role_keys(slug,keys) as (
  values
- ('admin',array['dashboard.view','users.view','users.create','users.edit','users.disable','students.view','students.create','students.edit','students.archive','students.export','academics.view','academics.edit','teachers.view','teachers.create','teachers.edit','attendance.view','attendance.create','attendance.edit','exams.view','exams.create','exams.edit','fees.view','fees.create','fees.edit','finance.view','finance.create','finance.edit','finance.export','library.view','library.create','library.edit','inventory.view','inventory.create','inventory.edit','reports.view','reports.create','reports.export','audit.view','settings.view']),
+ ('admin',array['exams.view','exams.create','exams.edit','exams.delete','dashboard.view','users.view','users.create','users.edit','users.disable','students.view','students.create','students.edit','students.archive','students.export','academics.view','academics.edit','teachers.view','teachers.create','teachers.edit','attendance.view','attendance.create','attendance.edit','exams.view','exams.create','exams.edit','fees.view','fees.create','fees.edit','finance.view','finance.create','finance.edit','finance.export','library.view','library.create','library.edit','inventory.view','inventory.create','inventory.edit','reports.view','reports.create','reports.export','audit.view','settings.view']),
  ('hr',array['dashboard.view','teachers.view','teachers.create','teachers.edit','attendance.view','attendance.create','attendance.edit','reports.view','reports.export']),
- ('teacher',array['dashboard.view','academics.view','students.view','teachers.view','attendance.view','attendance.create','attendance.edit','exams.view','exams.create','exams.edit','reports.view','reports.export']),
+ ('teacher',array['exams.view','exams.create','exams.edit','dashboard.view','academics.view','students.view','teachers.view','attendance.view','attendance.create','attendance.edit','exams.view','exams.create','exams.edit','reports.view','reports.export']),
  ('accountant',array['dashboard.view','students.view','fees.view','fees.create','fees.edit','finance.view','finance.create','finance.edit','finance.export','reports.view','reports.export']),
  ('librarian',array['dashboard.view','students.view','library.view','library.create','library.edit','library.delete','reports.view','reports.export']),
  ('storekeeper',array['dashboard.view','inventory.view','inventory.create','inventory.edit','inventory.delete','reports.view','reports.export']),
