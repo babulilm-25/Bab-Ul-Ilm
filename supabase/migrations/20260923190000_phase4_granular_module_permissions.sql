@@ -1,14 +1,14 @@
 -- Phase 4: granular hostel/mess/library/inventory authorization
 -- Keep module access separate from the generic student permission used by the Phase 3 foundation.
-insert into public.permissions(key,name,description) values
- ('hostel.view','Hostel: view','View hostel buildings, rooms, beds, allocations and attendance'),
- ('hostel.create','Hostel: create','Create hostel records and allocations'),
- ('hostel.edit','Hostel: edit','Edit hostel records and allocations'),
- ('hostel.delete','Hostel: delete','Delete hostel records'),
- ('mess.view','Mess: view','View mess plans, menus and attendance'),
- ('mess.create','Mess: create','Create mess plans, menus and attendance'),
- ('mess.edit','Mess: edit','Edit mess plans, menus and attendance'),
- ('mess.delete','Mess: delete','Delete mess records')
+insert into public.permissions(key,description,module) values
+ ('hostel.view','View hostel buildings, rooms, beds, allocations and attendance','hostel'),
+ ('hostel.create','Create hostel records and allocations','hostel'),
+ ('hostel.edit','Edit hostel records and allocations','hostel'),
+ ('hostel.delete','Delete hostel records','hostel'),
+ ('mess.view','View mess plans, menus and attendance','mess'),
+ ('mess.create','Create mess plans, menus and attendance','mess'),
+ ('mess.edit','Edit mess plans, menus and attendance','mess'),
+ ('mess.delete','Delete mess records','mess')
 on conflict (key) do nothing;
 
 -- Replace the Phase 3 broad students.* policies with module-specific authorization.
