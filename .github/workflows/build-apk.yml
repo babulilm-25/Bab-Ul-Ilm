@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+env:
+  VITE_SUPABASE_URL: https://btmkatizfbbasgnxprsa.supabase.co
+  VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_RcEOgd6rde-K0KRarEToxA_f4V5_Tf4
+
 jobs:
   build:
     runs-on: ubuntu-latest
