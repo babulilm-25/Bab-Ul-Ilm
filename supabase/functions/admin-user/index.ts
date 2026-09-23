@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
     if (created.error || !created.data.user) return json({ error: created.error?.message ?? "Could not create user" }, 409)
     const uid = created.data.user.id
 
-    const { error: pError } = await admin.from("profiles").update({ institution_id: callerProfile.institution_id, display_name: displayName || null, must_change_password: true }).eq("id", uid)
+    const { error: pError } = await admin.from("profiles").update({ institution_id: callerProfile.institution_id, display_name: displayName || null, must_change_password: false }).eq("id", uid)
     if (pError) { await admin.auth.admin.deleteUser(uid); return json({ error: "Could not initialize profile" }, 500) }
 
     if (body.role_id) {
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       if (error) { await admin.auth.admin.deleteUser(uid); return json({ error: "Could not assign branch" }, 500) }
     }
     await admin.from("audit_logs").insert({ institution_id: callerProfile.institution_id, actor_user_id: callerId, action: "user.created", entity_type: "profile", entity_id: uid, metadata: { email, role_id: body.role_id ?? null, branch_id: body.branch_id ?? null } })
-    return json({ ok: true, user_id: uid, must_change_password: true })
+    return json({ ok: true, user_id: uid, must_change_password: false })
   }
 
   if (!body.user_id) return json({ error: "user_id is required" }, 400)
@@ -133,9 +133,9 @@ Deno.serve(async (req) => {
     if (password.length < 12) return json({ error: "Password must be at least 12 characters" }, 400)
     const { error: authError } = await admin.auth.admin.updateUserById(body.user_id, { password })
     if (authError) return json({ error: authError.message }, 400)
-    await admin.from("profiles").update({ must_change_password: true }).eq("id", body.user_id)
+    await admin.from("profiles").update({ must_change_password: false }).eq("id", body.user_id)
     await admin.from("audit_logs").insert({ institution_id: callerProfile.institution_id, actor_user_id: callerId, action: "user.password_reset", entity_type: "profile", entity_id: body.user_id })
-    return json({ ok: true, must_change_password: true })
+    return json({ ok: true, must_change_password: false })
   }
 
   return json({ error: "Unsupported action" }, 400)
