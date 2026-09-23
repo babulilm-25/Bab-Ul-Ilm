@@ -4,6 +4,7 @@ import {supabase} from './lib/supabase'
 import type {Session} from '@supabase/supabase-js'
 import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage} from './phase16'
 import {SettingsPage} from './premium'
+import {SettingsPage} from './premium'
 
 type Page='Dashboard'|'Users'|'Roles & Permissions'|'Branches'|'Institution Structure'|'Hostel & Mess'|'Security'|'Students'|'Student Enrollment'|'Academics'|'Teachers / Staff'|'HR & Payroll'|'Data Import & Promotion'|'Timetable & Attendance'|'Exams & Results'|'Fees & Finance'|'Library & Inventory'|'Reports & Certificates'|'Communication & Portal'|'Settings'
 type Profile={id:string;institution_id:string|null;display_name:string|null;locale:string;theme:string;must_change_password:boolean;disabled_at:string|null}
