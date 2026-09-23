@@ -23,3 +23,5 @@ t=t.replace('accept=".csv,text/csv"','accept=".csv,.xlsx,.xls,text/csv,applicati
 t=t.replace('>Import CSV<','>Import CSV / Excel<')
 t=t.replace('CSV columns: admission_no, first_name, last_name, roll_no, gender, date_of_birth, phone, email, guardian_name, guardian_phone, status, joined_on, notes.','CSV/Excel columns: admission_no, first_name, last_name, roll_no, gender, date_of_birth, phone, email, guardian_name, guardian_phone, status, joined_on, notes.')
 q.write_text(t)
+
+# Remove legacy report page now replaced by ReportsEnhancedPage.\nimport re\ns=re.sub(r'\\nfunction ReportsCertificatesPage\\(.*?\\n}\\n\\n\\nfunction CommunicationPortalPage', '\\nfunction CommunicationPortalPage', s, flags=re.S)\np.write_text(s)\n
