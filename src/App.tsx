@@ -377,6 +377,7 @@ function ReportsCertificatesPage({setError}:{setError:(x:string)=>void}){
 
 
 function CommunicationPortalPage({setError,roleSlugs,superAdmin}:{setError:(x:string)=>void;roleSlugs:string[];superAdmin:boolean}){
+ void roleSlugs;
  const canManagePortal=superAdmin||permissionKeysForUi.has('communication.edit')||permissionKeysForUi.has('portal.edit');
  const[tab,setTab]=useState<'announcements'|'notifications'|'portal'|'myportal'>(canManagePortal?'announcements':'myportal'),[ann,setAnn]=useState<any[]>([]),[notes,setNotes]=useState<any[]>([]),[profiles,setProfiles]=useState<any[]>([]),[students,setStudents]=useState<any[]>([]),[users,setUsers]=useState<any[]>([]);
  const[a,setA]=useState({title:'',message:'',audience:'all'}),[p,setP]=useState({user_id:'',student_id:'',role_type:'parent'});
