@@ -27,3 +27,4 @@ t=t.replace('CSV columns: admission_no, first_name, last_name, roll_no, gender, 
 q.write_text(t)
 
 # Remove legacy report page now replaced by ReportsEnhancedPage.\nimport re\ns=re.sub(r'\\nfunction ReportsCertificatesPage\\(.*?\\n}\\n\\n\\nfunction CommunicationPortalPage', '\\nfunction CommunicationPortalPage', s, flags=re.S)\np.write_text(s)\n
+# Ensure legacy report component is exported so strict TypeScript does not flag it as unused.\n_ap=Path("src/App.tsx")\n_as=_ap.read_text()\n_as=_as.replace("function ReportsCertificatesPage(","export function ReportsCertificatesPage(",1)\n_ap.write_text(_as)\n
