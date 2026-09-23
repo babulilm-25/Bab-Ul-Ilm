@@ -1,0 +1,8 @@
+# Supabase Edge Function security configuration
+# admin-user is invoked only by authenticated users.
+[functions.admin-user]
+verify_jwt = true
+
+# Bootstrap is intentionally a one-time secret-protected public endpoint.
+[functions.bootstrap-super-admin]
+verify_jwt = false
