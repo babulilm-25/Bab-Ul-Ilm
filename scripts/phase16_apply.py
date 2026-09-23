@@ -2,8 +2,9 @@ from pathlib import Path
 p=Path("src/App.tsx")
 s=p.read_text()
 imp="import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage} from './phase16'"
+premium_imp="import {SettingsPage} from './premium'"
 s="\n".join(line for line in s.splitlines() if not line.startswith("import {DataImportPromotionPage,HrPayrollPage,ReportsEnhancedPage}"))+"\n"
-s=s.replace("import type {Session} from '@supabase/supabase-js'","import type {Session} from '@supabase/supabase-js'\n"+imp,1)
+s=s.replace("import type {Session} from '@supabase/supabase-js'","import type {Session} from '@supabase/supabase-js'\n"+imp+"\n"+premium_imp,1)
 s=s.replace("type Page='Dashboard'|'Users'|'Roles & Permissions'|'Branches'|'Institution Structure'|'Hostel & Mess'|'Security'|'Students'|'Student Enrollment'|'Academics'|'Teachers / Staff'|'Timetable & Attendance'|'Exams & Results'|'Fees & Finance'|'Library & Inventory'|'Reports & Certificates'|'Communication & Portal'",
 "type Page='Dashboard'|'Users'|'Roles & Permissions'|'Branches'|'Institution Structure'|'Hostel & Mess'|'Security'|'Students'|'Student Enrollment'|'Academics'|'Teachers / Staff'|'HR & Payroll'|'Data Import & Promotion'|'Timetable & Attendance'|'Exams & Results'|'Fees & Finance'|'Library & Inventory'|'Reports & Certificates'|'Communication & Portal'")
 s=s.replace("  'Teachers / Staff':{create:'teachers.create',edit:'teachers.create',delete:'teachers.delete'},","  'Teachers / Staff':{create:'teachers.create',edit:'teachers.edit',delete:'teachers.delete'},\n  'HR & Payroll':{create:'hr.create',edit:'hr.edit',delete:'hr.delete'},\n  'Data Import & Promotion':{create:'data.import',edit:'students.edit',delete:'students.edit'},")
