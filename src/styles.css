@@ -84,6 +84,15 @@ input,select,textarea{min-height:44px}
 }
 
 
+/* Refined motion */
+.hero-orb{animation:orb-breathe 5s ease-in-out infinite}
+.panel,.stats article,.role-card,.module,.feature{transform:translateZ(0)}
+@media(hover:hover){
+ .panel:hover,.stats article:hover,.role-card:hover,.module:hover,.feature:hover{transform:translateY(-2px)}
+ .primary:hover,.secondary:hover,.ghost:hover,.tab:hover{transform:translateY(-1px)}
+}
+@keyframes orb-breathe{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{transform:scale(1.025);box-shadow:0 0 0 10px rgba(255,255,255,.025)}}
+
 /* CRUD action polish */
 .row-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
 .action-btn{display:inline-flex;align-items:center;gap:5px;min-height:38px;padding:7px 10px}
