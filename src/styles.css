@@ -84,6 +84,14 @@ input,select,textarea{min-height:44px}
 }
 
 
+/* CRUD action polish */
+.row-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.action-btn{display:inline-flex;align-items:center;gap:5px;min-height:38px;padding:7px 10px}
+.danger{border:1px solid #efcaca;background:#fff5f5;color:#a52f2f;border-radius:12px;padding:8px 10px;font-weight:700}
+.danger:hover{background:#ffe9e9;border-color:#e6aaaa}
+.card-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+@media(max-width:620px){.row-actions{justify-content:flex-start}.action-btn{flex:0 0 auto}}
+
 /* Premium mobile-first visual system */
 :root{
   --ink:#10221c;--muted:#71817a;--line:#dce8e2;--surface:rgba(255,255,255,.82);
