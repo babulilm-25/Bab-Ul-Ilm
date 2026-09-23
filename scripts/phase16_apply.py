@@ -15,7 +15,10 @@ s=s.replace(needle,needle+"{page==='HR & Payroll'&&<HrPayrollPage setError={setE
 if "ReportsEnhancedPage" not in s or "HrPayrollPage" not in s or "DataImportPromotionPage" not in s: raise SystemExit("phase16 imports failed")
 s=s.replace("\nfunction ReportsCertificatesPage(","\nexport function ReportsCertificatesPage(",1)
 # Premium UX / Settings wiring (idempotent)
-if "from './premium'" not in s:
+# Remove any stale/generated copies first, then insert exactly one import.
+lines=[line for line in s.splitlines() if line.strip()!="import {SettingsPage} from './premium'"]
+s="\n".join(lines)+"\n"
+if "import {SettingsPage} from './premium'" not in s:
     s=s.replace("import type {Session} from '@supabase/supabase-js'","import type {Session} from '@supabase/supabase-js'\nimport {SettingsPage} from './premium'",1)
 if "'Settings'" not in s.split("type Page=",1)[1].split("\n",1)[0]:
     s=s.replace("'Communication & Portal'","'Communication & Portal'|'Settings'",1)
@@ -25,13 +28,8 @@ if "{page==='Settings'" not in s:
     s=s.replace("{page==='Communication & Portal'&&<CommunicationPortalPage setError={setError} roleSlugs={roleSlugs} superAdmin={superAdmin}/>}","{page==='Communication & Portal'&&<CommunicationPortalPage setError={setError} roleSlugs={roleSlugs} superAdmin={superAdmin}/>} {page==='Settings'&&<SettingsPage profile={profile} setError={setError} dark={dark} setDark={setDark}/>} ",1)
 if "auth-pills" not in s:
     s=s.replace('<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1>','<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1><div className="auth-pills"><span>Secure</span><span>Cloud-first</span><span>Beautifully simple</span></div>',1)
-# Keep repeated CI runs idempotent.
-while s.count("import {SettingsPage} from './premium'\\n") > 1:
-    s=s.replace("import {SettingsPage} from './premium'\\nimport {SettingsPage} from './premium'","import {SettingsPage} from './premium'",1)
 navPair="{label:'HR & Payroll',icon:Users,permission:'hr.view'},{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'},"
-while s.count(navPair) > 1:
-    s=s.replace(navPair+navPair,navPair,1)
+while s.count(navPair)>1: s=s.replace(navPair+navPair,navPair,1)
 renderPair="{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} "
-while s.count(renderPair) > 1:
-    s=s.replace(renderPair+renderPair,renderPair,1)
+while s.count(renderPair)>1: s=s.replace(renderPair+renderPair,renderPair,1)
 p.write_text(s)
