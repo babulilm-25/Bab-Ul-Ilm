@@ -26,7 +26,12 @@ if "{page==='Settings'" not in s:
 if "auth-pills" not in s:
     s=s.replace('<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1>','<p className="eyebrow">Madarsa Management Platform</p><h1>Organise knowledge.<br/><em>Serve with excellence.</em></h1><div className="auth-pills"><span>Secure</span><span>Cloud-first</span><span>Beautifully simple</span></div>',1)
 # Keep repeated CI runs idempotent.
-s=re.sub(r"(import \\{SettingsPage\\} from './premium'\\n)+", "import {SettingsPage} from './premium'\\n", s)
-s=re.sub(r"(\\{label:'HR & Payroll',icon:Users,permission:'hr.view'\\},\\{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'\\},)+", "{label:'HR & Payroll',icon:Users,permission:'hr.view'},{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'},", s)
-s=re.sub(r"(\\{page==='HR & Payroll'&&<HrPayrollPage setError=\\{setError\\}/>} \\{page==='Data Import & Promotion'&&<DataImportPromotionPage setError=\\{setError\\}/>\\} )+", "{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} ", s)
+while s.count("import {SettingsPage} from './premium'\\n") > 1:
+    s=s.replace("import {SettingsPage} from './premium'\\nimport {SettingsPage} from './premium'","import {SettingsPage} from './premium'",1)
+navPair="{label:'HR & Payroll',icon:Users,permission:'hr.view'},{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'},"
+while s.count(navPair) > 1:
+    s=s.replace(navPair+navPair,navPair,1)
+renderPair="{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} "
+while s.count(renderPair) > 1:
+    s=s.replace(renderPair+renderPair,renderPair,1)
 p.write_text(s)
