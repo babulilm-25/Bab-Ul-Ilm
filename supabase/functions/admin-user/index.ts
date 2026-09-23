@@ -9,7 +9,7 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } })
 
 type Body = {
-  action?: "create" | "disable" | "enable" | "reset_password"
+  action?: "create" | "disable" | "enable" | "reset_password" | "delete"
   user_id?: string
   email?: string
   password?: string
@@ -115,6 +115,15 @@ Deno.serve(async (req) => {
     if (authError) return json({ error: authError.message }, 400)
     await admin.from("profiles").update({ disabled_at: null }).eq("id", body.user_id)
     await admin.from("audit_logs").insert({ institution_id: callerProfile.institution_id, actor_user_id: callerId, action: "user.enabled", entity_type: "profile", entity_id: body.user_id })
+    return json({ ok: true })
+  }
+
+  if (action === "delete") {
+    if (!hasUsersEdit) return json({ error: "Missing users.edit permission" }, 403)
+    if (targetIsSuper && !isSuper) return json({ error: "Only Super Admin can delete a Super Admin account" }, 403)
+    await admin.from("audit_logs").insert({ institution_id: callerProfile.institution_id, actor_user_id: callerId, action: "user.deleted", entity_type: "profile", entity_id: body.user_id })
+    const { error: authError } = await admin.auth.admin.deleteUser(body.user_id)
+    if (authError) return json({ error: authError.message }, 400)
     return json({ ok: true })
   }
 
