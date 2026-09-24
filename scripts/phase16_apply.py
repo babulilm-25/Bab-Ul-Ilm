@@ -11,7 +11,10 @@ s=s.replace("  'Teachers / Staff':{create:'teachers.create',edit:'teachers.creat
 s=s.replace("{label:'Teachers / Staff',icon:Users,permission:'teachers.edit'},","{label:'Teachers / Staff',icon:Users,permission:'teachers.edit'},{label:'HR & Payroll',icon:Users,permission:'hr.view'},{label:'Data Import & Promotion',icon:RefreshCw,permission:'data.import'},")
 s=s.replace("{page==='Reports & Certificates'&&<ReportsCertificatesPage setError={setError}/>}", "{page==='Reports & Certificates'&&<ReportsEnhancedPage setError={setError}/>}") 
 needle="{page==='Teachers / Staff'&&<StaffPage setError={setError}/>} "
-s=s.replace(needle,needle+"{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} ")
+if "{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} " not in s:
+    s=s.replace(needle,needle+"{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} ")
+if "{page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} " not in s:
+    s=s.replace("{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} ","{page==='HR & Payroll'&&<HrPayrollPage setError={setError}/>} {page==='Data Import & Promotion'&&<DataImportPromotionPage setError={setError}/>} ",1)
 if "ReportsEnhancedPage" not in s or "HrPayrollPage" not in s or "DataImportPromotionPage" not in s: raise SystemExit("phase16 imports failed")
 s=s.replace("\nfunction ReportsCertificatesPage(","\nexport function ReportsCertificatesPage(",1)
 # Premium UX / Settings wiring (idempotent)
